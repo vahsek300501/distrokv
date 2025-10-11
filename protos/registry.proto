@@ -1,0 +1,26 @@
+syntax = "proto3";
+option go_package = "github.com/Vahsek/distrokv/registry";
+package registry;
+
+service RegistryService {
+    rpc RegisterNode(RegisterNodeRequest) returns (RegisterNodeResponse);
+    rpc GetPrimaryNode(PrimaryNodeRequest) returns (PrimaryNodeResponse);
+}
+
+message RegisterNodeRequest {
+    string hostname = 1;
+    string ipAddress = 2;
+    string portNumber = 3;
+}
+
+message RegisterNodeResponse {
+    string status = 1;
+    string message = 2;
+}
+
+message PrimaryNodeRequest {}
+message PrimaryNodeResponse {
+    string hostname = 1;
+    string ipAddress = 2;
+    string portNumber = 3;
+}
