@@ -1,7 +1,15 @@
 package main
 
-import registry "github.com/Vahsek/distrokv/internal/registry"
+import (
+	"log/slog"
+
+	registry "github.com/Vahsek/distrokv/internal/registry"
+	logging "github.com/Vahsek/distrokv/logging"
+)
 
 func main() {
-	registry.StartRegistryServer(":8080")
+	var fileLoggerProvider *logging.FileLoggerProvider = logging.NewFileLoggerProvider("logfile", ".log", "./logsdir", 10*1024, 10000)
+	var logger slog.Logger = *logging.GetLogger(fileLoggerProvider)
+
+	registry.StartRegistryServer(":8080", logger)
 }

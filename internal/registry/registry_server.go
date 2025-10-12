@@ -3,6 +3,7 @@ package registry
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net"
 
 	registrycontroller "github.com/Vahsek/distrokv/internal/registry/controllers"
@@ -43,14 +44,18 @@ func (registryServer *server) NodeHeartBeat(ctx context.Context, request *pb.Hea
 	}, errors.New("Failed to register heartbeat")
 }
 
-func StartRegistryServer(portNumber string) {
+func StartRegistryServer(portNumber string, logger slog.Logger) {
+	logger.Info("Creating TCP Socket on port" + portNumber)
 	lis, err := net.Listen("tcp", portNumber)
 	if err != nil {
-		// TODO add logging
+		logger.Error("Error in Creating TCP socket")
 	}
 	regServer := grpc.NewServer()
-	pb.RegisterRegistryServiceServer(regServer, &server{})
+	logger.Info("Initializing GRPC service for registry")
+	pb.RegisterRegistryServiceServer(regServer, InitializeNewServer(logger))
 	if err := regServer.Serve(lis); err != nil {
-		// TODO add logging
+		logger.Info("Failed to initialize GRPC server for registry")
+	} else {
+		logger.Info("Successfully initialized GRPC server")
 	}
 }
