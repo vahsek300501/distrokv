@@ -12,14 +12,17 @@ import (
 )
 
 func (registryServer *server) RegisterNode(ctx context.Context, request *pb.RegisterNodeRequest) (*pb.RegisterNodeResponse, error) {
-	status := registrycontroller.RegisterNewNode(request)
+	logger := registryServer.logger
+	logger.Info("Request to regsister new node")
+	status := registrycontroller.RegisterNewNode(request, logger)
 	if status {
+		logger.Info("Successfully registered the node")
 		return &pb.RegisterNodeResponse{
 			Status:  "200",
 			Message: "Node registered successfully",
 		}, nil
 	}
-
+	logger.Error("Failed to register the node")
 	return &pb.RegisterNodeResponse{
 		Status:  "500",
 		Message: "Node Failed to register",
@@ -31,13 +34,16 @@ func (registryServer *server) GetPrimaryNode(ctx context.Context, request *pb.Pr
 }
 
 func (registryServer *server) NodeHeartBeat(ctx context.Context, request *pb.HeartBeatRequest) (*pb.HeartBeatResponse, error) {
-	status := registrycontroller.RegisterNodeHeartBeat(request)
+	logger := registryServer.logger
+	status := registrycontroller.RegisterNodeHeartBeat(request, logger)
 	if status {
+		logger.Info("successfully registered the node heartbeat")
 		return &pb.HeartBeatResponse{
 			Status:  "200",
 			Message: "Heartbeat registed successfully",
 		}, nil
 	}
+	logger.Error("Failed to register node heatbeat")
 	return &pb.HeartBeatResponse{
 		Status:  "500",
 		Message: "Failed to register heartbeat",
