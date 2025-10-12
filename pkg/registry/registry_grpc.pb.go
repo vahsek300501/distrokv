@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.32.0
-// source: protos/registry.proto
+// source: registry.proto
 
 package registry
 
@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	RegistryService_RegisterNode_FullMethodName   = "/registry.RegistryService/RegisterNode"
 	RegistryService_GetPrimaryNode_FullMethodName = "/registry.RegistryService/GetPrimaryNode"
+	RegistryService_NodeHeartBeat_FullMethodName  = "/registry.RegistryService/NodeHeartBeat"
 )
 
 // RegistryServiceClient is the client API for RegistryService service.
@@ -29,6 +30,7 @@ const (
 type RegistryServiceClient interface {
 	RegisterNode(ctx context.Context, in *RegisterNodeRequest, opts ...grpc.CallOption) (*RegisterNodeResponse, error)
 	GetPrimaryNode(ctx context.Context, in *PrimaryNodeRequest, opts ...grpc.CallOption) (*PrimaryNodeResponse, error)
+	NodeHeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error)
 }
 
 type registryServiceClient struct {
@@ -59,12 +61,23 @@ func (c *registryServiceClient) GetPrimaryNode(ctx context.Context, in *PrimaryN
 	return out, nil
 }
 
+func (c *registryServiceClient) NodeHeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HeartBeatResponse)
+	err := c.cc.Invoke(ctx, RegistryService_NodeHeartBeat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RegistryServiceServer is the server API for RegistryService service.
 // All implementations must embed UnimplementedRegistryServiceServer
 // for forward compatibility.
 type RegistryServiceServer interface {
 	RegisterNode(context.Context, *RegisterNodeRequest) (*RegisterNodeResponse, error)
 	GetPrimaryNode(context.Context, *PrimaryNodeRequest) (*PrimaryNodeResponse, error)
+	NodeHeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error)
 	mustEmbedUnimplementedRegistryServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedRegistryServiceServer) RegisterNode(context.Context, *Registe
 }
 func (UnimplementedRegistryServiceServer) GetPrimaryNode(context.Context, *PrimaryNodeRequest) (*PrimaryNodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPrimaryNode not implemented")
+}
+func (UnimplementedRegistryServiceServer) NodeHeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NodeHeartBeat not implemented")
 }
 func (UnimplementedRegistryServiceServer) mustEmbedUnimplementedRegistryServiceServer() {}
 func (UnimplementedRegistryServiceServer) testEmbeddedByValue()                         {}
@@ -138,6 +154,24 @@ func _RegistryService_GetPrimaryNode_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RegistryService_NodeHeartBeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HeartBeatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistryServiceServer).NodeHeartBeat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RegistryService_NodeHeartBeat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistryServiceServer).NodeHeartBeat(ctx, req.(*HeartBeatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RegistryService_ServiceDesc is the grpc.ServiceDesc for RegistryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -153,7 +187,11 @@ var RegistryService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetPrimaryNode",
 			Handler:    _RegistryService_GetPrimaryNode_Handler,
 		},
+		{
+			MethodName: "NodeHeartBeat",
+			Handler:    _RegistryService_NodeHeartBeat_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "protos/registry.proto",
+	Metadata: "registry.proto",
 }

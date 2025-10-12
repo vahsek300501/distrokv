@@ -18,8 +18,7 @@ type node struct {
 	lastHeartBeatTime time.Time
 }
 
-func (n node) GetHash() string {
-	var plaintext string = n.hostname + n.ipAddress
+func GetHash(plaintext string) string {
 	hasher := md5.New()
 	_, err := io.WriteString(hasher, plaintext)
 	if err != nil {
@@ -45,7 +44,7 @@ func RegisterNewNode(nodeDetails *pb.RegisterNodeRequest) bool {
 		registrationTime:  time.Now(),
 		lastHeartBeatTime: time.Now(),
 	}
-	nodeHash := newNode.GetHash()
+	nodeHash := GetHash(newNode.hostname + newNode.ipAddress)
 
 	RegisteredNodes.mu.Lock()
 	defer RegisteredNodes.mu.Unlock()
@@ -56,5 +55,22 @@ func RegisterNewNode(nodeDetails *pb.RegisterNodeRequest) bool {
 		return false
 	}
 	RegisteredNodes.registeredNodesMap[nodeHash] = newNode
+	return true
+}
+
+func RegisterNodeHeartBeat(nodeDetails *pb.HeartBeatRequest) bool {
+	RegisteredNodes.mu.Lock()
+	defer RegisteredNodes.mu.Unlock()
+
+	nodeHash := GetHash(nodeDetails.Hostname + nodeDetails.IpAddress)
+	existingNode, exists := RegisteredNodes.registeredNodesMap[nodeHash]
+
+	if !exists {
+		return false
+	}
+
+	existingNode.lastHeartBeatTime = time.Now()
+	RegisteredNodes.registeredNodesMap[nodeHash] = existingNode
+
 	return true
 }

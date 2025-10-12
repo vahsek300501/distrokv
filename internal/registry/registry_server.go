@@ -29,6 +29,20 @@ func (registryServer *server) GetPrimaryNode(ctx context.Context, request *pb.Pr
 	return nil, nil
 }
 
+func (registryServer *server) NodeHeartBeat(ctx context.Context, request *pb.HeartBeatRequest) (*pb.HeartBeatResponse, error) {
+	status := registrycontroller.RegisterNodeHeartBeat(request)
+	if status {
+		return &pb.HeartBeatResponse{
+			Status:  "200",
+			Message: "Heartbeat registed successfully",
+		}, nil
+	}
+	return &pb.HeartBeatResponse{
+		Status:  "500",
+		Message: "Failed to register heartbeat",
+	}, errors.New("Failed to register heartbeat")
+}
+
 func StartRegistryServer(portNumber string) {
 	lis, err := net.Listen("tcp", portNumber)
 	if err != nil {
