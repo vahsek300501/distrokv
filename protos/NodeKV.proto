@@ -1,6 +1,6 @@
 syntax = "proto3";
-option go_package = "github.com/Vahsek/distrokv/pkg/node";
-package node;
+option go_package = "github.com/Vahsek/distrokv/pkg/node/dataplane";
+package nodedataplane;
 
 service NodeKeyValueService{
     rpc GetKey(GetRequest) returns (GetResponse);

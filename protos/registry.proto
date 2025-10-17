@@ -6,6 +6,7 @@ service RegistryService {
     rpc RegisterNode(RegisterNodeRequest) returns (RegisterNodeResponse);
     rpc GetPrimaryNode(PrimaryNodeRequest) returns (PrimaryNodeResponse);
     rpc NodeHeartBeat(HeartBeatRequest) returns (HeartBeatResponse);
+    rpc GetNodeList(NodeListRequest) returns (NodeListResponse);
 }
 
 message RegisterNodeRequest {
@@ -35,4 +36,18 @@ message HeartBeatRequest {
 message HeartBeatResponse {
     string status = 1;
     string message = 2;
+}
+
+message NodeListRequest {
+
+}
+
+message NodeListResponse {
+    repeated NodeDetails nodeList = 1;
+}
+
+message NodeDetails {
+    string nodeIP = 1;
+    string nodeHostname = 2;
+    string nodeControlPort = 3;
 }

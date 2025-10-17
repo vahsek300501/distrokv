@@ -1,5 +1,30 @@
 syntax = "proto3";
-option go_package = "github.com/Vahsek/distrokv/pkg/node";
-package node;
+option go_package = "github.com/Vahsek/distrokv/pkg/node/controlplane";
+package nodecontrolplane;
 
-// service 
+service NodeControlPlaneService{
+    rpc ReplicateSetRequest(SetReplicationRequest) returns (SetReplicationResponse);
+    rpc ReplicateDeleteRequest(DeleteReplicationRequest) returns (DeleteReplicationResponse);
+}
+
+message SetReplicationRequest {
+    string key = 1;
+    string value = 2;
+}
+
+message SetReplicationResponse {
+    string key = 1;
+    bool status = 2;
+    string error = 3;
+}
+
+message DeleteReplicationRequest {
+    string key = 1;
+}
+
+message DeleteReplicationResponse {
+    string key = 1;
+    string value = 2;
+    bool status = 3;
+    string error = 4;
+}

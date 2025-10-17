@@ -81,3 +81,26 @@ func RegisterNodeHeartBeat(nodeDetails *pb.HeartBeatRequest, logger slog.Logger)
 
 	return true
 }
+
+func GetNodeList(logger slog.Logger) *pb.NodeListResponse {
+	RegisteredNodes.mu.Lock()
+	defer RegisteredNodes.mu.Unlock()
+
+	logger.Info("Generating Node List response")
+
+	var nodes []*pb.NodeDetails
+	registeredNodesMap := RegisteredNodes.registeredNodesMap
+	for _, value := range registeredNodesMap {
+		nodeDetail := &pb.NodeDetails{
+			NodeIP:          value.ipAddress,
+			NodeHostname:    value.hostname,
+			NodeControlPort: value.portNumber,
+		}
+		nodes = append(nodes, nodeDetail)
+	}
+
+	var nodeListResponse *pb.NodeListResponse = &pb.NodeListResponse{
+		NodeList: nodes,
+	}
+	return nodeListResponse
+}

@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.10
 // 	protoc        v6.32.0
-// source: registry.proto
+// source: protos/registry.proto
 
 package registry
 
@@ -32,7 +32,7 @@ type RegisterNodeRequest struct {
 
 func (x *RegisterNodeRequest) Reset() {
 	*x = RegisterNodeRequest{}
-	mi := &file_registry_proto_msgTypes[0]
+	mi := &file_protos_registry_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +44,7 @@ func (x *RegisterNodeRequest) String() string {
 func (*RegisterNodeRequest) ProtoMessage() {}
 
 func (x *RegisterNodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_registry_proto_msgTypes[0]
+	mi := &file_protos_registry_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *RegisterNodeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterNodeRequest.ProtoReflect.Descriptor instead.
 func (*RegisterNodeRequest) Descriptor() ([]byte, []int) {
-	return file_registry_proto_rawDescGZIP(), []int{0}
+	return file_protos_registry_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *RegisterNodeRequest) GetHostname() string {
@@ -91,7 +91,7 @@ type RegisterNodeResponse struct {
 
 func (x *RegisterNodeResponse) Reset() {
 	*x = RegisterNodeResponse{}
-	mi := &file_registry_proto_msgTypes[1]
+	mi := &file_protos_registry_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -103,7 +103,7 @@ func (x *RegisterNodeResponse) String() string {
 func (*RegisterNodeResponse) ProtoMessage() {}
 
 func (x *RegisterNodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_registry_proto_msgTypes[1]
+	mi := &file_protos_registry_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +116,7 @@ func (x *RegisterNodeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterNodeResponse.ProtoReflect.Descriptor instead.
 func (*RegisterNodeResponse) Descriptor() ([]byte, []int) {
-	return file_registry_proto_rawDescGZIP(), []int{1}
+	return file_protos_registry_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RegisterNodeResponse) GetStatus() string {
@@ -141,7 +141,7 @@ type PrimaryNodeRequest struct {
 
 func (x *PrimaryNodeRequest) Reset() {
 	*x = PrimaryNodeRequest{}
-	mi := &file_registry_proto_msgTypes[2]
+	mi := &file_protos_registry_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -153,7 +153,7 @@ func (x *PrimaryNodeRequest) String() string {
 func (*PrimaryNodeRequest) ProtoMessage() {}
 
 func (x *PrimaryNodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_registry_proto_msgTypes[2]
+	mi := &file_protos_registry_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -166,7 +166,7 @@ func (x *PrimaryNodeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PrimaryNodeRequest.ProtoReflect.Descriptor instead.
 func (*PrimaryNodeRequest) Descriptor() ([]byte, []int) {
-	return file_registry_proto_rawDescGZIP(), []int{2}
+	return file_protos_registry_proto_rawDescGZIP(), []int{2}
 }
 
 type PrimaryNodeResponse struct {
@@ -180,7 +180,7 @@ type PrimaryNodeResponse struct {
 
 func (x *PrimaryNodeResponse) Reset() {
 	*x = PrimaryNodeResponse{}
-	mi := &file_registry_proto_msgTypes[3]
+	mi := &file_protos_registry_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -192,7 +192,7 @@ func (x *PrimaryNodeResponse) String() string {
 func (*PrimaryNodeResponse) ProtoMessage() {}
 
 func (x *PrimaryNodeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_registry_proto_msgTypes[3]
+	mi := &file_protos_registry_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -205,7 +205,7 @@ func (x *PrimaryNodeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PrimaryNodeResponse.ProtoReflect.Descriptor instead.
 func (*PrimaryNodeResponse) Descriptor() ([]byte, []int) {
-	return file_registry_proto_rawDescGZIP(), []int{3}
+	return file_protos_registry_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PrimaryNodeResponse) GetHostname() string {
@@ -240,7 +240,7 @@ type HeartBeatRequest struct {
 
 func (x *HeartBeatRequest) Reset() {
 	*x = HeartBeatRequest{}
-	mi := &file_registry_proto_msgTypes[4]
+	mi := &file_protos_registry_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -252,7 +252,7 @@ func (x *HeartBeatRequest) String() string {
 func (*HeartBeatRequest) ProtoMessage() {}
 
 func (x *HeartBeatRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_registry_proto_msgTypes[4]
+	mi := &file_protos_registry_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -265,7 +265,7 @@ func (x *HeartBeatRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HeartBeatRequest.ProtoReflect.Descriptor instead.
 func (*HeartBeatRequest) Descriptor() ([]byte, []int) {
-	return file_registry_proto_rawDescGZIP(), []int{4}
+	return file_protos_registry_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *HeartBeatRequest) GetHostname() string {
@@ -299,7 +299,7 @@ type HeartBeatResponse struct {
 
 func (x *HeartBeatResponse) Reset() {
 	*x = HeartBeatResponse{}
-	mi := &file_registry_proto_msgTypes[5]
+	mi := &file_protos_registry_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -311,7 +311,7 @@ func (x *HeartBeatResponse) String() string {
 func (*HeartBeatResponse) ProtoMessage() {}
 
 func (x *HeartBeatResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_registry_proto_msgTypes[5]
+	mi := &file_protos_registry_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -324,7 +324,7 @@ func (x *HeartBeatResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HeartBeatResponse.ProtoReflect.Descriptor instead.
 func (*HeartBeatResponse) Descriptor() ([]byte, []int) {
-	return file_registry_proto_rawDescGZIP(), []int{5}
+	return file_protos_registry_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *HeartBeatResponse) GetStatus() string {
@@ -341,11 +341,151 @@ func (x *HeartBeatResponse) GetMessage() string {
 	return ""
 }
 
-var File_registry_proto protoreflect.FileDescriptor
+type NodeListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_registry_proto_rawDesc = "" +
+func (x *NodeListRequest) Reset() {
+	*x = NodeListRequest{}
+	mi := &file_protos_registry_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NodeListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NodeListRequest) ProtoMessage() {}
+
+func (x *NodeListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_registry_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NodeListRequest.ProtoReflect.Descriptor instead.
+func (*NodeListRequest) Descriptor() ([]byte, []int) {
+	return file_protos_registry_proto_rawDescGZIP(), []int{6}
+}
+
+type NodeListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	NodeList      []*NodeDetails         `protobuf:"bytes,1,rep,name=nodeList,proto3" json:"nodeList,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NodeListResponse) Reset() {
+	*x = NodeListResponse{}
+	mi := &file_protos_registry_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NodeListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NodeListResponse) ProtoMessage() {}
+
+func (x *NodeListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_registry_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NodeListResponse.ProtoReflect.Descriptor instead.
+func (*NodeListResponse) Descriptor() ([]byte, []int) {
+	return file_protos_registry_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *NodeListResponse) GetNodeList() []*NodeDetails {
+	if x != nil {
+		return x.NodeList
+	}
+	return nil
+}
+
+type NodeDetails struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	NodeIP          string                 `protobuf:"bytes,1,opt,name=nodeIP,proto3" json:"nodeIP,omitempty"`
+	NodeHostname    string                 `protobuf:"bytes,2,opt,name=nodeHostname,proto3" json:"nodeHostname,omitempty"`
+	NodeControlPort string                 `protobuf:"bytes,3,opt,name=nodeControlPort,proto3" json:"nodeControlPort,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *NodeDetails) Reset() {
+	*x = NodeDetails{}
+	mi := &file_protos_registry_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NodeDetails) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NodeDetails) ProtoMessage() {}
+
+func (x *NodeDetails) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_registry_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NodeDetails.ProtoReflect.Descriptor instead.
+func (*NodeDetails) Descriptor() ([]byte, []int) {
+	return file_protos_registry_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *NodeDetails) GetNodeIP() string {
+	if x != nil {
+		return x.NodeIP
+	}
+	return ""
+}
+
+func (x *NodeDetails) GetNodeHostname() string {
+	if x != nil {
+		return x.NodeHostname
+	}
+	return ""
+}
+
+func (x *NodeDetails) GetNodeControlPort() string {
+	if x != nil {
+		return x.NodeControlPort
+	}
+	return ""
+}
+
+var File_protos_registry_proto protoreflect.FileDescriptor
+
+const file_protos_registry_proto_rawDesc = "" +
 	"\n" +
-	"\x0eregistry.proto\x12\bregistry\"o\n" +
+	"\x15protos/registry.proto\x12\bregistry\"o\n" +
 	"\x13RegisterNodeRequest\x12\x1a\n" +
 	"\bhostname\x18\x01 \x01(\tR\bhostname\x12\x1c\n" +
 	"\tipAddress\x18\x02 \x01(\tR\tipAddress\x12\x1e\n" +
@@ -370,67 +510,81 @@ const file_registry_proto_rawDesc = "" +
 	"portNumber\"E\n" +
 	"\x11HeartBeatResponse\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xf9\x01\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x11\n" +
+	"\x0fNodeListRequest\"E\n" +
+	"\x10NodeListResponse\x121\n" +
+	"\bnodeList\x18\x01 \x03(\v2\x15.registry.NodeDetailsR\bnodeList\"s\n" +
+	"\vNodeDetails\x12\x16\n" +
+	"\x06nodeIP\x18\x01 \x01(\tR\x06nodeIP\x12\"\n" +
+	"\fnodeHostname\x18\x02 \x01(\tR\fnodeHostname\x12(\n" +
+	"\x0fnodeControlPort\x18\x03 \x01(\tR\x0fnodeControlPort2\xbf\x02\n" +
 	"\x0fRegistryService\x12M\n" +
 	"\fRegisterNode\x12\x1d.registry.RegisterNodeRequest\x1a\x1e.registry.RegisterNodeResponse\x12M\n" +
 	"\x0eGetPrimaryNode\x12\x1c.registry.PrimaryNodeRequest\x1a\x1d.registry.PrimaryNodeResponse\x12H\n" +
-	"\rNodeHeartBeat\x12\x1a.registry.HeartBeatRequest\x1a\x1b.registry.HeartBeatResponseB)Z'github.com/Vahsek/distrokv/pkg/registryb\x06proto3"
+	"\rNodeHeartBeat\x12\x1a.registry.HeartBeatRequest\x1a\x1b.registry.HeartBeatResponse\x12D\n" +
+	"\vGetNodeList\x12\x19.registry.NodeListRequest\x1a\x1a.registry.NodeListResponseB)Z'github.com/Vahsek/distrokv/pkg/registryb\x06proto3"
 
 var (
-	file_registry_proto_rawDescOnce sync.Once
-	file_registry_proto_rawDescData []byte
+	file_protos_registry_proto_rawDescOnce sync.Once
+	file_protos_registry_proto_rawDescData []byte
 )
 
-func file_registry_proto_rawDescGZIP() []byte {
-	file_registry_proto_rawDescOnce.Do(func() {
-		file_registry_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_registry_proto_rawDesc), len(file_registry_proto_rawDesc)))
+func file_protos_registry_proto_rawDescGZIP() []byte {
+	file_protos_registry_proto_rawDescOnce.Do(func() {
+		file_protos_registry_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_protos_registry_proto_rawDesc), len(file_protos_registry_proto_rawDesc)))
 	})
-	return file_registry_proto_rawDescData
+	return file_protos_registry_proto_rawDescData
 }
 
-var file_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
-var file_registry_proto_goTypes = []any{
+var file_protos_registry_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_protos_registry_proto_goTypes = []any{
 	(*RegisterNodeRequest)(nil),  // 0: registry.RegisterNodeRequest
 	(*RegisterNodeResponse)(nil), // 1: registry.RegisterNodeResponse
 	(*PrimaryNodeRequest)(nil),   // 2: registry.PrimaryNodeRequest
 	(*PrimaryNodeResponse)(nil),  // 3: registry.PrimaryNodeResponse
 	(*HeartBeatRequest)(nil),     // 4: registry.HeartBeatRequest
 	(*HeartBeatResponse)(nil),    // 5: registry.HeartBeatResponse
+	(*NodeListRequest)(nil),      // 6: registry.NodeListRequest
+	(*NodeListResponse)(nil),     // 7: registry.NodeListResponse
+	(*NodeDetails)(nil),          // 8: registry.NodeDetails
 }
-var file_registry_proto_depIdxs = []int32{
-	0, // 0: registry.RegistryService.RegisterNode:input_type -> registry.RegisterNodeRequest
-	2, // 1: registry.RegistryService.GetPrimaryNode:input_type -> registry.PrimaryNodeRequest
-	4, // 2: registry.RegistryService.NodeHeartBeat:input_type -> registry.HeartBeatRequest
-	1, // 3: registry.RegistryService.RegisterNode:output_type -> registry.RegisterNodeResponse
-	3, // 4: registry.RegistryService.GetPrimaryNode:output_type -> registry.PrimaryNodeResponse
-	5, // 5: registry.RegistryService.NodeHeartBeat:output_type -> registry.HeartBeatResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+var file_protos_registry_proto_depIdxs = []int32{
+	8, // 0: registry.NodeListResponse.nodeList:type_name -> registry.NodeDetails
+	0, // 1: registry.RegistryService.RegisterNode:input_type -> registry.RegisterNodeRequest
+	2, // 2: registry.RegistryService.GetPrimaryNode:input_type -> registry.PrimaryNodeRequest
+	4, // 3: registry.RegistryService.NodeHeartBeat:input_type -> registry.HeartBeatRequest
+	6, // 4: registry.RegistryService.GetNodeList:input_type -> registry.NodeListRequest
+	1, // 5: registry.RegistryService.RegisterNode:output_type -> registry.RegisterNodeResponse
+	3, // 6: registry.RegistryService.GetPrimaryNode:output_type -> registry.PrimaryNodeResponse
+	5, // 7: registry.RegistryService.NodeHeartBeat:output_type -> registry.HeartBeatResponse
+	7, // 8: registry.RegistryService.GetNodeList:output_type -> registry.NodeListResponse
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_registry_proto_init() }
-func file_registry_proto_init() {
-	if File_registry_proto != nil {
+func init() { file_protos_registry_proto_init() }
+func file_protos_registry_proto_init() {
+	if File_protos_registry_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_registry_proto_rawDesc), len(file_registry_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_protos_registry_proto_rawDesc), len(file_protos_registry_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_registry_proto_goTypes,
-		DependencyIndexes: file_registry_proto_depIdxs,
-		MessageInfos:      file_registry_proto_msgTypes,
+		GoTypes:           file_protos_registry_proto_goTypes,
+		DependencyIndexes: file_protos_registry_proto_depIdxs,
+		MessageInfos:      file_protos_registry_proto_msgTypes,
 	}.Build()
-	File_registry_proto = out.File
-	file_registry_proto_goTypes = nil
-	file_registry_proto_depIdxs = nil
+	File_protos_registry_proto = out.File
+	file_protos_registry_proto_goTypes = nil
+	file_protos_registry_proto_depIdxs = nil
 }

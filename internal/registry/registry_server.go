@@ -50,6 +50,12 @@ func (registryServer *server) NodeHeartBeat(ctx context.Context, request *pb.Hea
 	}, errors.New("Failed to register heartbeat")
 }
 
+func (registryServer *server) GetNodeList(ctx context.Context, request *pb.NodeListRequest) (*pb.NodeListResponse, error) {
+	logger := registryServer.logger
+	nodeListResponse := registrycontroller.GetNodeList(logger)
+	return nodeListResponse, nil
+}
+
 func StartRegistryServer(portNumber string, logger slog.Logger) {
 	logger.Info("Creating TCP Socket on port" + portNumber)
 	lis, err := net.Listen("tcp", portNumber)
