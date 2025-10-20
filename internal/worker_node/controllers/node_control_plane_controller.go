@@ -15,7 +15,7 @@ func RegisterNewPeerNode(request *pb.NewServerAddRequest, nodeData *data.NodeDat
 	ipAddress := request.IpAddress
 	controlPlanePort := request.ControlPlanePort
 	dataPlanePort := request.DataPlanePort
-	nodeHash := util.GenerateHash(hostname + ipAddress)
+	nodeHash := util.GenerateHash(hostname + ipAddress + controlPlanePort)
 	logger.Info("Started registering the node: ", "NodeName: ", hostname, "NodeIP: ", ipAddress)
 	nodeData.Mu.Lock()
 	defer nodeData.Mu.Unlock()

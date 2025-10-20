@@ -47,7 +47,9 @@ func (nodeRegistry *NodeRegistry) RegisterNewNode(nodeDetails *pb.RegisterNodeRe
 		registrationTime:  time.Now(),
 		lastHeartBeatTime: time.Now(),
 	}
-	nodeHash := util.GenerateHash(newNode.nodeDetails.NodeHostname + newNode.nodeDetails.NodeIP)
+	nodeHash := util.GenerateHash(newNode.nodeDetails.NodeHostname +
+		newNode.nodeDetails.NodeIP +
+		newNode.nodeDetails.NodeControlPort)
 
 	nodeRegistry.logger.Info("Checking the node hash")
 	_, exists := nodeRegistry.nodes[nodeHash]
@@ -66,7 +68,9 @@ func (nodeRegistry *NodeRegistry) RegisterNodeHeartBeat(nodeDetails *pb.HeartBea
 	defer nodeRegistry.mu.Unlock()
 
 	nodeRegistry.logger.Info("Heatbeat for node with Nodename: %s NodeIP: %s", nodeDetails.Hostname, nodeDetails.IpAddress)
-	nodeHash := util.GenerateHash(nodeDetails.Hostname + nodeDetails.IpAddress)
+	nodeHash := util.GenerateHash(nodeDetails.Hostname +
+		nodeDetails.IpAddress +
+		nodeDetails.PortNumber)
 	existingNode, exists := nodeRegistry.nodes[nodeHash]
 
 	if !exists {
