@@ -21,6 +21,8 @@ func (controlPlaneServer *NodeControlPlaneServer) ReplicateDeleteRequest(ctx con
 }
 
 func (controlPlaneServer *NodeControlPlaneServer) RegisterNewPeerServer(ctx context.Context, request *pb.NewServerAddRequest) (*pb.NewServerAddResponse, error) {
+	controlPlaneServer.logger.Info("Registeration request from peer")
+	controlPlaneServer.logger.Info(request.String())
 	err := controllers.RegisterNewPeerNode(request, controlPlaneServer.NodeData, &controlPlaneServer.logger)
 	if err != nil {
 		controlPlaneServer.logger.Error("Error in registering new peer node")
