@@ -1,4 +1,4 @@
-package workernode
+package servers
 
 import (
 	"context"
@@ -26,6 +26,7 @@ func StartNodeDataPlaneServer(dataPlanePortNumber string, logger slog.Logger) {
 	lis, err := net.Listen("tcp", dataPlanePortNumber)
 	if err != nil {
 		logger.Error("Error in Creating TCP socket")
+		return
 	}
 	nodeDPServer := grpc.NewServer()
 	logger.Info("Initializing GRPC service for node data plane")

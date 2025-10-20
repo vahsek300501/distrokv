@@ -1,10 +1,11 @@
-package workernode
+package servers
 
 import (
 	"context"
 	"log/slog"
 	"net"
 
+	"github.com/Vahsek/distrokv/internal/worker_node/clients"
 	pb "github.com/Vahsek/distrokv/pkg/node/controlplane"
 	"google.golang.org/grpc"
 )
@@ -17,15 +18,16 @@ func (controlPlaneServer *NodeControlPlaneServer) ReplicateDeleteRequest(ctx con
 	return nil, nil
 }
 
-func StartNodeControlPlaneServer(controlPlanePortNumber string, logger slog.Logger) {
+func StartNodeControlPlaneServer(controlPlanePortNumber string, logger slog.Logger, client *clients.ClusterClient) {
 	logger.Info("Creating TCP Socket on port" + controlPlanePortNumber)
 	lis, err := net.Listen("tcp", controlPlanePortNumber)
 	if err != nil {
 		logger.Error("Error in Creating TCP socket")
+		return
 	}
 	nodeCPServer := grpc.NewServer()
 	logger.Info("Initializing GRPC service for node control plane")
-	pb.RegisterNodeControlPlaneServiceServer(nodeCPServer, InitializeControlPlaneServer(logger))
+	pb.RegisterNodeControlPlaneServiceServer(nodeCPServer, InitializeControlPlaneServer(logger, client))
 	if err := nodeCPServer.Serve(lis); err != nil {
 		logger.Info("Failed to initialize GRPC server for node control plane")
 	} else {

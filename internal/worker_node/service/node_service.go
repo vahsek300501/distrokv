@@ -2,16 +2,62 @@ package service
 
 import (
 	"log/slog"
+	"sync"
 
+	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
 	"github.com/Vahsek/distrokv/internal/storage"
 	"github.com/Vahsek/distrokv/internal/worker_node/clients"
+	"github.com/Vahsek/distrokv/internal/worker_node/servers"
 )
 
-type NodeConfig struct {
+type WorkerNodeService struct {
+	NodeConfig      *nodecommon.Node
+	ClusterClient   *clients.ClusterClient
+	Storage         *storage.KeyValueStore
+	RegistryAddress string
+	logger          slog.Logger
 }
 
-type NodeService struct {
-	ClusterClient *clients.ClusterClient
-	Storage       *storage.KeyValueStore
-	logger        slog.Logger
+func InitializeNewNodeService(hostname, ip, controlPort, dataPort string, nodeType int, registryAddress string, logger slog.Logger) *WorkerNodeService {
+	return &WorkerNodeService{
+		NodeConfig:      nodecommon.InitializeNode(hostname, ip, controlPort, dataPort, nodeType),
+		ClusterClient:   clients.InitializeClusterClient(registryAddress, logger),
+		Storage:         storage.NewKeyValueStore(logger),
+		RegistryAddress: registryAddress,
+		logger:          logger,
+	}
+}
+
+func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
+	var wg sync.WaitGroup
+	nodeService.logger.Info("Bootstrapping the worker node")
+	nodeService.logger.Info("Registering with the registry server")
+	nodeService.ClusterClient.RegisterNodeWithRegistry(
+		nodeService.NodeConfig.NodeIP,
+		nodeService.NodeConfig.NodeHostname,
+		nodeService.NodeConfig.NodeControlPort,
+		nodeService.NodeConfig.NodeDataPort,
+	)
+	nodeService.logger.Info("Successfully registered with registry")
+
+	nodeService.logger.Info("Starting Control Plane Server")
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		servers.StartNodeControlPlaneServer(
+			":"+nodeService.NodeConfig.NodeControlPort,
+			nodeService.logger,
+			nodeService.ClusterClient)
+	}()
+
+	nodeService.logger.Info("Starting Data Plane Server")
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		servers.StartNodeDataPlaneServer(
+			":"+nodeService.NodeConfig.NodeDataPort,
+			nodeService.logger)
+	}()
+
+	wg.Wait()
 }

@@ -35,7 +35,7 @@ func retriveAllNodesFromRegistry(cntNodeAddress, cntHostname string, registryCli
 	return nil
 }
 
-func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cntHostname, cntDataPort, cntControlPort string) error {
+func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cntHostname, cntControlPort, cntDataPort string) error {
 	clusterClient.mu.Lock()
 	defer clusterClient.mu.Unlock()
 
