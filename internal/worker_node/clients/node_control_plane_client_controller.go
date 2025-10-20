@@ -8,7 +8,7 @@ import (
 	pb_contol_plane "github.com/Vahsek/distrokv/pkg/node/controlplane"
 )
 
-func RegisterNodeWithPeers(nodeData *data.NodeData, clusterClient *ClusterClient) error {
+func (clusterClient *ClusterClient) RegisterNodeWithPeers(nodeData *data.NodeData) error {
 	nodeData.Mu.RLock()
 	defer nodeData.Mu.RUnlock()
 	logger := clusterClient.logger

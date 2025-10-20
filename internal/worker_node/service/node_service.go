@@ -82,5 +82,12 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 			nodeService.NodeData)
 	}()
 
+	nodeService.logger.Info("Registering Node with peers")
+	errRegisteringWithPeers := nodeService.ClusterClient.RegisterNodeWithPeers(nodeService.NodeData)
+	if errRegisteringWithPeers != nil {
+		nodeService.logger.Error("failed to register service with peers")
+		return
+	}
+	nodeService.logger.Info("Successfully registerd with peers")
 	wg.Wait()
 }

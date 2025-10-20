@@ -2,6 +2,7 @@ package clients
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	clientcommon "github.com/Vahsek/distrokv/internal/common/client_common"
@@ -18,19 +19,22 @@ type ClusterClient struct {
 
 func InitializeClusterClient(logger slog.Logger) *ClusterClient {
 	return &ClusterClient{
-		factory: clientcommon.InitializeClientFactory(),
+		factory: clientcommon.InitializeClientFactory(logger),
 		logger:  logger,
 	}
 }
 
 // createRegistryClient creates a gRPC client for registry communication
 func (clusterClient *ClusterClient) createRegistryClient(registryServerAddress string) (pb_registry.RegistryServiceClient, error) {
+	fmt.Println("Started registring with registery")
+	fmt.Println(registryServerAddress)
 	grpcDialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	registryBuilder := clientcommon.NewGrpcBuilder(registryServerAddress).
+	registryBuilder := clientcommon.NewGrpcBuilder(registryServerAddress, clusterClient.logger).
 		SetGrpcDialOptions(grpcDialOption...)
 	registryClientConstructor := func(conn *grpc.ClientConn) pb_registry.RegistryServiceClient {
 		return pb_registry.NewRegistryServiceClient(conn)
 	}
+	fmt.Println("Creating client using factory")
 	client, err := clientcommon.GetClient(
 		context.Background(),
 		clusterClient.factory,
@@ -46,7 +50,7 @@ func (clusterClient *ClusterClient) createRegistryClient(registryServerAddress s
 
 func (clusterClient *ClusterClient) createPeerClientConnection(peerAddress string) (pb_node_control_plane.NodeControlPlaneServiceClient, error) {
 	grpcDialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	peerClientBuilder := clientcommon.NewGrpcBuilder(peerAddress).
+	peerClientBuilder := clientcommon.NewGrpcBuilder(peerAddress, clusterClient.logger).
 		SetGrpcDialOptions(grpcDialOption...)
 	peerClientConstructor := func(conn *grpc.ClientConn) pb_node_control_plane.NodeControlPlaneServiceClient {
 		return pb_node_control_plane.NewNodeControlPlaneServiceClient(conn)

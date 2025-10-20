@@ -14,9 +14,10 @@ type ClientFactory struct {
 	logger        slog.Logger
 }
 
-func InitializeClientFactory() *ClientFactory {
+func InitializeClientFactory(logger slog.Logger) *ClientFactory {
 	return &ClientFactory{
 		ConnectionMap: make(map[string]*grpc.ClientConn),
+		logger:        logger,
 	}
 }
 

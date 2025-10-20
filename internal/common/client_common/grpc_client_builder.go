@@ -15,10 +15,11 @@ type GrpcBuilder struct {
 	logger  slog.Logger
 }
 
-func NewGrpcBuilder(target string) *GrpcBuilder {
+func NewGrpcBuilder(target string, logger slog.Logger) *GrpcBuilder {
 	return &GrpcBuilder{
 		target:  target,
 		timeout: 5 * time.Second,
+		logger:  logger,
 	}
 }
 
