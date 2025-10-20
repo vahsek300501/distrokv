@@ -32,12 +32,16 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 	var wg sync.WaitGroup
 	nodeService.logger.Info("Bootstrapping the worker node")
 	nodeService.logger.Info("Registering with the registry server")
-	nodeService.ClusterClient.RegisterNodeWithRegistry(
+	err := nodeService.ClusterClient.RegisterNodeWithRegistry(
 		nodeService.NodeConfig.NodeIP,
 		nodeService.NodeConfig.NodeHostname,
 		nodeService.NodeConfig.NodeControlPort,
 		nodeService.NodeConfig.NodeDataPort,
 	)
+	if err != nil {
+		nodeService.logger.Error("Error in registering node with the registry")
+		return
+	}
 	nodeService.logger.Info("Successfully registered with registry")
 
 	nodeService.logger.Info("Starting Control Plane Server")
@@ -57,6 +61,20 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 		servers.StartNodeDataPlaneServer(
 			":"+nodeService.NodeConfig.NodeDataPort,
 			nodeService.logger)
+	}()
+
+	nodeService.logger.Info("Starting heartbeat service")
+	wg.Add(1)
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				nodeService.logger.Error("Heartbeat service panicked", "error", r)
+			}
+		}()
+		nodeService.ClusterClient.SendRegularNodeHeartBeat(
+			nodeService.NodeConfig.NodeHostname,
+			nodeService.NodeConfig.NodeIP,
+			nodeService.NodeConfig.NodeControlPort)
 	}()
 
 	wg.Wait()

@@ -2,8 +2,10 @@ package clients
 
 import (
 	"context"
+	"time"
 
 	clientcommon "github.com/Vahsek/distrokv/internal/common/client_common"
+	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
 	pb_registry "github.com/Vahsek/distrokv/pkg/registry"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,12 +26,8 @@ func retriveAllNodesFromRegistry(cntNodeAddress, cntHostname string, registryCli
 		if node_name == cntHostname && node_ip == cntNodeAddress {
 			continue
 		}
-		peerNode := PeerNodes{
-			hostname:    node_name,
-			ipAddress:   node_ip,
-			controlPort: node_control_port,
-		}
-		clusterClient.nodes[node_name] = peerNode
+		peerNode := nodecommon.InitializeNode(node_name, node_ip, node_control_port, "", 1)
+		clusterClient.nodes[node_name] = *peerNode
 	}
 
 	return nil
@@ -68,4 +66,34 @@ func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cnt
 	// Get All the nodes from the registry
 	retriveAllNodesFromRegistry(cntNodeAddress, cntHostname, registryClient, clusterClient)
 	return nil
+}
+
+func (clusterClient *ClusterClient) SendRegularNodeHeartBeat(cntHostname, cntIP, cntCPPort string) {
+	// Creating connection to registry server
+	grpcDialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	registryBuilder := clientcommon.NewGrpcBuilder(clusterClient.registryAddress).SetGrpcDialOptions(grpcDialOption...)
+	registryClientConstructor := func(conn *grpc.ClientConn) pb_registry.RegistryServiceClient {
+		return pb_registry.NewRegistryServiceClient(conn)
+	}
+	registryClient, err := clientcommon.GetClient(context.Background(), clusterClient.factory, *registryBuilder, registryClientConstructor)
+	if err != nil {
+		clusterClient.logger.Error("Error creating registry client")
+		return
+	}
+
+	ticker := time.NewTicker(10 * time.Second)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		clusterClient.mu.Lock()
+		clusterClient.logger.Info("Sending Heartbeat to Registry server")
+		heartbeatRequest := &pb_registry.HeartBeatRequest{
+			Hostname:   cntHostname,
+			IpAddress:  cntIP,
+			PortNumber: cntCPPort,
+		}
+		registryClient.NodeHeartBeat(context.Background(), heartbeatRequest)
+		clusterClient.logger.Info("Successfully send heartbeat request to server")
+		clusterClient.mu.Unlock()
+	}
 }

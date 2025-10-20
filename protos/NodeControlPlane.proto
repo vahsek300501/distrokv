@@ -5,6 +5,7 @@ package nodecontrolplane;
 service NodeControlPlaneService{
     rpc ReplicateSetRequest(SetReplicationRequest) returns (SetReplicationResponse);
     rpc ReplicateDeleteRequest(DeleteReplicationRequest) returns (DeleteReplicationResponse);
+    rpc RegisterNewPeerServer(NewServerAddRequest) returns (NewServerAddResponse);
 }
 
 message SetReplicationRequest {
@@ -27,4 +28,16 @@ message DeleteReplicationResponse {
     string value = 2;
     bool status = 3;
     string error = 4;
+}
+
+message NewServerAddRequest {
+    string hostname = 1;
+    string ipAddress = 2;
+    string controlPlanePort = 3;
+    string dataPlanePort = 4;
+}
+
+message NewServerAddResponse {
+    string status = 1;
+    string message = 2;
 }
