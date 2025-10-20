@@ -5,28 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	clientcommon "github.com/Vahsek/distrokv/internal/common/client_common"
 	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
 	"github.com/Vahsek/distrokv/internal/worker_node/data"
 	pb_registry "github.com/Vahsek/distrokv/pkg/registry"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
-
-// createRegistryClient creates a gRPC client for registry communication
-func (clusterClient *ClusterClient) createRegistryClient(nodeData *data.NodeData) (pb_registry.RegistryServiceClient, *grpc.ClientConn, error) {
-	grpcDialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	registryBuilder := clientcommon.NewGrpcBuilder(nodeData.RegistryServerAddress).
-		SetGrpcDialOptions(grpcDialOption...)
-
-	conn, err := registryBuilder.Build()
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to create registry connection: %w", err)
-	}
-
-	client := pb_registry.NewRegistryServiceClient(conn)
-	return client, conn, nil
-}
 
 func retrieveAllNodesFromRegistry(nodeData *data.NodeData, registryClient pb_registry.RegistryServiceClient, clusterClient *ClusterClient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -70,12 +52,11 @@ func (clusterClient *ClusterClient) RegisterNodeWithRegistry(nodeData *data.Node
 	clusterClient.logger.Info("Starting node registration with registry")
 
 	// Create client with proper resource management
-	registryClient, conn, err := clusterClient.createRegistryClient(nodeData)
+	registryClient, err := clusterClient.createRegistryClient(nodeData)
 	if err != nil {
 		clusterClient.logger.Error("Error creating registry client", "error", err)
 		return err
 	}
-	defer conn.Close() // Ensure connection is closed
 
 	request := &pb_registry.RegisterNodeRequest{
 		Hostname:   nodeData.NodeDetails.NodeHostname,
@@ -111,12 +92,11 @@ func (clusterClient *ClusterClient) SendRegularNodeHeartBeat(nodeData *data.Node
 	clusterClient.logger.Info("Starting heartbeat service")
 
 	// Create client once and reuse
-	registryClient, conn, err := clusterClient.createRegistryClient(nodeData)
+	registryClient, err := clusterClient.createRegistryClient(nodeData)
 	if err != nil {
 		clusterClient.logger.Error("Error creating registry client for heartbeat", "error", err)
 		return
 	}
-	defer conn.Close()
 
 	ticker := time.NewTicker(10 * time.Second)
 	defer ticker.Stop()

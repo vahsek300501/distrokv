@@ -12,5 +12,5 @@ type NodeData struct {
 	PeerNodes             map[string]nodecommon.Node
 	RegistryServerAddress string
 	Logger                slog.Logger
-	Mu                    sync.Mutex
+	Mu                    sync.RWMutex
 }

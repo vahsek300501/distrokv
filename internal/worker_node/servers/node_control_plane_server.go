@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/Vahsek/distrokv/internal/worker_node/clients"
+	"github.com/Vahsek/distrokv/internal/worker_node/controllers"
 	"github.com/Vahsek/distrokv/internal/worker_node/data"
 	pb "github.com/Vahsek/distrokv/pkg/node/controlplane"
 	"google.golang.org/grpc"
@@ -20,7 +21,18 @@ func (controlPlaneServer *NodeControlPlaneServer) ReplicateDeleteRequest(ctx con
 }
 
 func (controlPlaneServer *NodeControlPlaneServer) RegisterNewPeerServer(ctx context.Context, request *pb.NewServerAddRequest) (*pb.NewServerAddResponse, error) {
-	return nil, nil
+	err := controllers.RegisterNewPeerNode(request, controlPlaneServer.NodeData, &controlPlaneServer.logger)
+	if err != nil {
+		controlPlaneServer.logger.Error("Error in registering new peer node")
+		return &pb.NewServerAddResponse{
+			Status:  "Failed",
+			Message: "Failed to register new server",
+		}, err
+	}
+	return &pb.NewServerAddResponse{
+		Status:  "Success",
+		Message: "Successfully registerd the new peer server",
+	}, nil
 }
 
 func StartNodeControlPlaneServer(controlPlanePortNumber string, logger slog.Logger, client *clients.ClusterClient, nodeData *data.NodeData) {
