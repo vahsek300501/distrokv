@@ -7,15 +7,16 @@ import (
 
 	clientcommon "github.com/Vahsek/distrokv/internal/common/client_common"
 	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
+	"github.com/Vahsek/distrokv/internal/worker_node/data"
 	pb_registry "github.com/Vahsek/distrokv/pkg/registry"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 // createRegistryClient creates a gRPC client for registry communication
-func (clusterClient *ClusterClient) createRegistryClient() (pb_registry.RegistryServiceClient, *grpc.ClientConn, error) {
+func (clusterClient *ClusterClient) createRegistryClient(nodeData *data.NodeData) (pb_registry.RegistryServiceClient, *grpc.ClientConn, error) {
 	grpcDialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	registryBuilder := clientcommon.NewGrpcBuilder(clusterClient.nodeData.RegistryServerAddress).
+	registryBuilder := clientcommon.NewGrpcBuilder(nodeData.RegistryServerAddress).
 		SetGrpcDialOptions(grpcDialOption...)
 
 	conn, err := registryBuilder.Build()
@@ -27,7 +28,7 @@ func (clusterClient *ClusterClient) createRegistryClient() (pb_registry.Registry
 	return client, conn, nil
 }
 
-func retrieveAllNodesFromRegistry(cntNodeAddress, cntHostname string, registryClient pb_registry.RegistryServiceClient, clusterClient *ClusterClient) error {
+func retrieveAllNodesFromRegistry(nodeData *data.NodeData, registryClient pb_registry.RegistryServiceClient, clusterClient *ClusterClient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -38,8 +39,8 @@ func retrieveAllNodesFromRegistry(cntNodeAddress, cntHostname string, registryCl
 	}
 
 	// Lock only when modifying shared state
-	clusterClient.nodeData.Mu.Lock()
-	defer clusterClient.nodeData.Mu.Unlock()
+	nodeData.Mu.Lock()
+	defer nodeData.Mu.Unlock()
 
 	// Set up node list in map
 	for _, node := range nodeList.NodeList {
@@ -48,12 +49,12 @@ func retrieveAllNodesFromRegistry(cntNodeAddress, cntHostname string, registryCl
 		nodeControlPort := node.NodeControlPort
 
 		// Skip self
-		if nodeName == cntHostname && nodeIP == cntNodeAddress {
+		if nodeName == nodeData.NodeDetails.NodeHostname && nodeIP == nodeData.NodeDetails.NodeIP {
 			continue
 		}
 
 		peerNode := nodecommon.InitializeNode(nodeName, nodeIP, nodeControlPort, "", 1)
-		clusterClient.nodeData.PeerNodes[nodeName] = *peerNode
+		nodeData.PeerNodes[nodeName] = *peerNode
 
 		clusterClient.logger.Info("Added peer node",
 			"hostname", nodeName,
@@ -65,11 +66,11 @@ func retrieveAllNodesFromRegistry(cntNodeAddress, cntHostname string, registryCl
 	return nil
 }
 
-func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cntHostname, cntControlPort, cntDataPort string) error {
+func (clusterClient *ClusterClient) RegisterNodeWithRegistry(nodeData *data.NodeData) error {
 	clusterClient.logger.Info("Starting node registration with registry")
 
 	// Create client with proper resource management
-	registryClient, conn, err := clusterClient.createRegistryClient()
+	registryClient, conn, err := clusterClient.createRegistryClient(nodeData)
 	if err != nil {
 		clusterClient.logger.Error("Error creating registry client", "error", err)
 		return err
@@ -77,9 +78,9 @@ func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cnt
 	defer conn.Close() // Ensure connection is closed
 
 	request := &pb_registry.RegisterNodeRequest{
-		Hostname:   cntHostname,
-		IpAddress:  cntNodeAddress,
-		PortNumber: cntControlPort,
+		Hostname:   nodeData.NodeDetails.NodeHostname,
+		IpAddress:  nodeData.NodeDetails.NodeIP,
+		PortNumber: nodeData.NodeDetails.NodeControlPort,
 	}
 
 	// Add timeout for registration
@@ -98,7 +99,7 @@ func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cnt
 		"message", response.Message)
 
 	// Handle error from node retrieval
-	if err := retrieveAllNodesFromRegistry(cntNodeAddress, cntHostname, registryClient, clusterClient); err != nil {
+	if err := retrieveAllNodesFromRegistry(nodeData, registryClient, clusterClient); err != nil {
 		clusterClient.logger.Error("Failed to retrieve peer nodes", "error", err)
 		return fmt.Errorf("failed to retrieve peer nodes: %w", err)
 	}
@@ -106,11 +107,11 @@ func (clusterClient *ClusterClient) RegisterNodeWithRegistry(cntNodeAddress, cnt
 	return nil
 }
 
-func (clusterClient *ClusterClient) SendRegularNodeHeartBeat(cntHostname, cntIP, cntCPPort string) {
+func (clusterClient *ClusterClient) SendRegularNodeHeartBeat(nodeData *data.NodeData) {
 	clusterClient.logger.Info("Starting heartbeat service")
 
 	// Create client once and reuse
-	registryClient, conn, err := clusterClient.createRegistryClient()
+	registryClient, conn, err := clusterClient.createRegistryClient(nodeData)
 	if err != nil {
 		clusterClient.logger.Error("Error creating registry client for heartbeat", "error", err)
 		return
@@ -121,9 +122,9 @@ func (clusterClient *ClusterClient) SendRegularNodeHeartBeat(cntHostname, cntIP,
 	defer ticker.Stop()
 
 	heartbeatRequest := &pb_registry.HeartBeatRequest{
-		Hostname:   cntHostname,
-		IpAddress:  cntIP,
-		PortNumber: cntCPPort,
+		Hostname:   nodeData.NodeDetails.NodeHostname,
+		IpAddress:  nodeData.NodeDetails.NodeIP,
+		PortNumber: nodeData.NodeDetails.NodeControlPort,
 	}
 
 	for range ticker.C {

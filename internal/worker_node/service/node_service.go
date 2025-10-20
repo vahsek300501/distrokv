@@ -31,7 +31,7 @@ func InitializeNewNodeService(hostname, ip, controlPort, dataPort string, nodeTy
 	return &WorkerNodeService{
 		NodeConfig:      nodeConfig,
 		NodeData:        nodeData,
-		ClusterClient:   clients.InitializeClusterClient(nodeData, logger),
+		ClusterClient:   clients.InitializeClusterClient(logger),
 		Storage:         storage.NewKeyValueStore(logger),
 		RegistryAddress: registryAddress,
 		logger:          logger,
@@ -43,11 +43,7 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 	nodeService.logger.Info("Bootstrapping the worker node")
 	nodeService.logger.Info("Registering with the registry server")
 	err := nodeService.ClusterClient.RegisterNodeWithRegistry(
-		nodeService.NodeConfig.NodeIP,
-		nodeService.NodeConfig.NodeHostname,
-		nodeService.NodeConfig.NodeControlPort,
-		nodeService.NodeConfig.NodeDataPort,
-	)
+		nodeService.NodeData)
 	if err != nil {
 		nodeService.logger.Error("Error in registering node with the registry")
 		return
@@ -61,7 +57,8 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 		servers.StartNodeControlPlaneServer(
 			":"+nodeService.NodeConfig.NodeControlPort,
 			nodeService.logger,
-			nodeService.ClusterClient)
+			nodeService.ClusterClient,
+			nodeService.NodeData)
 	}()
 
 	nodeService.logger.Info("Starting Data Plane Server")
@@ -82,9 +79,7 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 			}
 		}()
 		nodeService.ClusterClient.SendRegularNodeHeartBeat(
-			nodeService.NodeConfig.NodeHostname,
-			nodeService.NodeConfig.NodeIP,
-			nodeService.NodeConfig.NodeControlPort)
+			nodeService.NodeData)
 	}()
 
 	wg.Wait()
