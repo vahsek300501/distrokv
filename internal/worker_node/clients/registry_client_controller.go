@@ -52,7 +52,7 @@ func (clusterClient *ClusterClient) RegisterNodeWithRegistry(nodeData *data.Node
 	clusterClient.logger.Info("Starting node registration with registry")
 
 	// Create client with proper resource management
-	registryClient, err := clusterClient.createRegistryClient(nodeData)
+	registryClient, err := clusterClient.createRegistryClient(nodeData.RegistryServerAddress)
 	if err != nil {
 		clusterClient.logger.Error("Error creating registry client", "error", err)
 		return err
@@ -92,7 +92,7 @@ func (clusterClient *ClusterClient) SendRegularNodeHeartBeat(nodeData *data.Node
 	clusterClient.logger.Info("Starting heartbeat service")
 
 	// Create client once and reuse
-	registryClient, err := clusterClient.createRegistryClient(nodeData)
+	registryClient, err := clusterClient.createRegistryClient(nodeData.RegistryServerAddress)
 	if err != nil {
 		clusterClient.logger.Error("Error creating registry client for heartbeat", "error", err)
 		return
