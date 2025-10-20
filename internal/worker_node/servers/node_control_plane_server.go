@@ -18,6 +18,10 @@ func (controlPlaneServer *NodeControlPlaneServer) ReplicateDeleteRequest(ctx con
 	return nil, nil
 }
 
+func (controlPlaneServer *NodeControlPlaneServer) RegisterNewPeerServer(ctx context.Context, request *pb.NewServerAddRequest) (*pb.NewServerAddResponse, error) {
+	return nil, nil
+}
+
 func StartNodeControlPlaneServer(controlPlanePortNumber string, logger slog.Logger, client *clients.ClusterClient) {
 	logger.Info("Creating TCP Socket on port" + controlPlanePortNumber)
 	lis, err := net.Listen("tcp", controlPlanePortNumber)

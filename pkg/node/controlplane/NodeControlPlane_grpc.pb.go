@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	NodeControlPlaneService_ReplicateSetRequest_FullMethodName    = "/nodecontrolplane.NodeControlPlaneService/ReplicateSetRequest"
 	NodeControlPlaneService_ReplicateDeleteRequest_FullMethodName = "/nodecontrolplane.NodeControlPlaneService/ReplicateDeleteRequest"
+	NodeControlPlaneService_RegisterNewPeerServer_FullMethodName  = "/nodecontrolplane.NodeControlPlaneService/RegisterNewPeerServer"
 )
 
 // NodeControlPlaneServiceClient is the client API for NodeControlPlaneService service.
@@ -30,6 +31,7 @@ const (
 type NodeControlPlaneServiceClient interface {
 	ReplicateSetRequest(ctx context.Context, in *SetReplicationRequest, opts ...grpc.CallOption) (*SetReplicationResponse, error)
 	ReplicateDeleteRequest(ctx context.Context, in *DeleteReplicationRequest, opts ...grpc.CallOption) (*DeleteReplicationResponse, error)
+	RegisterNewPeerServer(ctx context.Context, in *NewServerAddRequest, opts ...grpc.CallOption) (*NewServerAddResponse, error)
 }
 
 type nodeControlPlaneServiceClient struct {
@@ -60,12 +62,23 @@ func (c *nodeControlPlaneServiceClient) ReplicateDeleteRequest(ctx context.Conte
 	return out, nil
 }
 
+func (c *nodeControlPlaneServiceClient) RegisterNewPeerServer(ctx context.Context, in *NewServerAddRequest, opts ...grpc.CallOption) (*NewServerAddResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NewServerAddResponse)
+	err := c.cc.Invoke(ctx, NodeControlPlaneService_RegisterNewPeerServer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NodeControlPlaneServiceServer is the server API for NodeControlPlaneService service.
 // All implementations must embed UnimplementedNodeControlPlaneServiceServer
 // for forward compatibility.
 type NodeControlPlaneServiceServer interface {
 	ReplicateSetRequest(context.Context, *SetReplicationRequest) (*SetReplicationResponse, error)
 	ReplicateDeleteRequest(context.Context, *DeleteReplicationRequest) (*DeleteReplicationResponse, error)
+	RegisterNewPeerServer(context.Context, *NewServerAddRequest) (*NewServerAddResponse, error)
 	mustEmbedUnimplementedNodeControlPlaneServiceServer()
 }
 
@@ -81,6 +94,9 @@ func (UnimplementedNodeControlPlaneServiceServer) ReplicateSetRequest(context.Co
 }
 func (UnimplementedNodeControlPlaneServiceServer) ReplicateDeleteRequest(context.Context, *DeleteReplicationRequest) (*DeleteReplicationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicateDeleteRequest not implemented")
+}
+func (UnimplementedNodeControlPlaneServiceServer) RegisterNewPeerServer(context.Context, *NewServerAddRequest) (*NewServerAddResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterNewPeerServer not implemented")
 }
 func (UnimplementedNodeControlPlaneServiceServer) mustEmbedUnimplementedNodeControlPlaneServiceServer() {
 }
@@ -140,6 +156,24 @@ func _NodeControlPlaneService_ReplicateDeleteRequest_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NodeControlPlaneService_RegisterNewPeerServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewServerAddRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeControlPlaneServiceServer).RegisterNewPeerServer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NodeControlPlaneService_RegisterNewPeerServer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeControlPlaneServiceServer).RegisterNewPeerServer(ctx, req.(*NewServerAddRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NodeControlPlaneService_ServiceDesc is the grpc.ServiceDesc for NodeControlPlaneService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,6 +188,10 @@ var NodeControlPlaneService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReplicateDeleteRequest",
 			Handler:    _NodeControlPlaneService_ReplicateDeleteRequest_Handler,
+		},
+		{
+			MethodName: "RegisterNewPeerServer",
+			Handler:    _NodeControlPlaneService_RegisterNewPeerServer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

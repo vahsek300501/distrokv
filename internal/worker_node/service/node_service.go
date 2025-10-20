@@ -7,11 +7,13 @@ import (
 	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
 	"github.com/Vahsek/distrokv/internal/storage"
 	"github.com/Vahsek/distrokv/internal/worker_node/clients"
+	"github.com/Vahsek/distrokv/internal/worker_node/data"
 	"github.com/Vahsek/distrokv/internal/worker_node/servers"
 )
 
 type WorkerNodeService struct {
 	NodeConfig      *nodecommon.Node
+	NodeData        *data.NodeData
 	ClusterClient   *clients.ClusterClient
 	Storage         *storage.KeyValueStore
 	RegistryAddress string
@@ -19,9 +21,17 @@ type WorkerNodeService struct {
 }
 
 func InitializeNewNodeService(hostname, ip, controlPort, dataPort string, nodeType int, registryAddress string, logger slog.Logger) *WorkerNodeService {
+	nodeConfig := nodecommon.InitializeNode(hostname, ip, controlPort, dataPort, nodeType)
+	nodeData := &data.NodeData{
+		NodeDetails:           *nodeConfig,
+		PeerNodes:             make(map[string]nodecommon.Node),
+		RegistryServerAddress: registryAddress,
+		Logger:                logger,
+	}
 	return &WorkerNodeService{
-		NodeConfig:      nodecommon.InitializeNode(hostname, ip, controlPort, dataPort, nodeType),
-		ClusterClient:   clients.InitializeClusterClient(registryAddress, logger),
+		NodeConfig:      nodeConfig,
+		NodeData:        nodeData,
+		ClusterClient:   clients.InitializeClusterClient(nodeData, logger),
 		Storage:         storage.NewKeyValueStore(logger),
 		RegistryAddress: registryAddress,
 		logger:          logger,

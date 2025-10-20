@@ -245,6 +245,126 @@ func (x *DeleteReplicationResponse) GetError() string {
 	return ""
 }
 
+type NewServerAddRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Hostname         string                 `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	IpAddress        string                 `protobuf:"bytes,2,opt,name=ipAddress,proto3" json:"ipAddress,omitempty"`
+	ControlPlanePort string                 `protobuf:"bytes,3,opt,name=controlPlanePort,proto3" json:"controlPlanePort,omitempty"`
+	DataPlanePort    string                 `protobuf:"bytes,4,opt,name=dataPlanePort,proto3" json:"dataPlanePort,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *NewServerAddRequest) Reset() {
+	*x = NewServerAddRequest{}
+	mi := &file_protos_NodeControlPlane_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NewServerAddRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewServerAddRequest) ProtoMessage() {}
+
+func (x *NewServerAddRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_NodeControlPlane_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewServerAddRequest.ProtoReflect.Descriptor instead.
+func (*NewServerAddRequest) Descriptor() ([]byte, []int) {
+	return file_protos_NodeControlPlane_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *NewServerAddRequest) GetHostname() string {
+	if x != nil {
+		return x.Hostname
+	}
+	return ""
+}
+
+func (x *NewServerAddRequest) GetIpAddress() string {
+	if x != nil {
+		return x.IpAddress
+	}
+	return ""
+}
+
+func (x *NewServerAddRequest) GetControlPlanePort() string {
+	if x != nil {
+		return x.ControlPlanePort
+	}
+	return ""
+}
+
+func (x *NewServerAddRequest) GetDataPlanePort() string {
+	if x != nil {
+		return x.DataPlanePort
+	}
+	return ""
+}
+
+type NewServerAddResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NewServerAddResponse) Reset() {
+	*x = NewServerAddResponse{}
+	mi := &file_protos_NodeControlPlane_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NewServerAddResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewServerAddResponse) ProtoMessage() {}
+
+func (x *NewServerAddResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_NodeControlPlane_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewServerAddResponse.ProtoReflect.Descriptor instead.
+func (*NewServerAddResponse) Descriptor() ([]byte, []int) {
+	return file_protos_NodeControlPlane_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *NewServerAddResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *NewServerAddResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_protos_NodeControlPlane_proto protoreflect.FileDescriptor
 
 const file_protos_NodeControlPlane_proto_rawDesc = "" +
@@ -263,10 +383,19 @@ const file_protos_NodeControlPlane_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\bR\x06status\x12\x14\n" +
-	"\x05error\x18\x04 \x01(\tR\x05error2\xf6\x01\n" +
+	"\x05error\x18\x04 \x01(\tR\x05error\"\xa1\x01\n" +
+	"\x13NewServerAddRequest\x12\x1a\n" +
+	"\bhostname\x18\x01 \x01(\tR\bhostname\x12\x1c\n" +
+	"\tipAddress\x18\x02 \x01(\tR\tipAddress\x12*\n" +
+	"\x10controlPlanePort\x18\x03 \x01(\tR\x10controlPlanePort\x12$\n" +
+	"\rdataPlanePort\x18\x04 \x01(\tR\rdataPlanePort\"H\n" +
+	"\x14NewServerAddResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xde\x02\n" +
 	"\x17NodeControlPlaneService\x12h\n" +
 	"\x13ReplicateSetRequest\x12'.nodecontrolplane.SetReplicationRequest\x1a(.nodecontrolplane.SetReplicationResponse\x12q\n" +
-	"\x16ReplicateDeleteRequest\x12*.nodecontrolplane.DeleteReplicationRequest\x1a+.nodecontrolplane.DeleteReplicationResponseB2Z0github.com/Vahsek/distrokv/pkg/node/controlplaneb\x06proto3"
+	"\x16ReplicateDeleteRequest\x12*.nodecontrolplane.DeleteReplicationRequest\x1a+.nodecontrolplane.DeleteReplicationResponse\x12f\n" +
+	"\x15RegisterNewPeerServer\x12%.nodecontrolplane.NewServerAddRequest\x1a&.nodecontrolplane.NewServerAddResponseB2Z0github.com/Vahsek/distrokv/pkg/node/controlplaneb\x06proto3"
 
 var (
 	file_protos_NodeControlPlane_proto_rawDescOnce sync.Once
@@ -280,20 +409,24 @@ func file_protos_NodeControlPlane_proto_rawDescGZIP() []byte {
 	return file_protos_NodeControlPlane_proto_rawDescData
 }
 
-var file_protos_NodeControlPlane_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_protos_NodeControlPlane_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_protos_NodeControlPlane_proto_goTypes = []any{
 	(*SetReplicationRequest)(nil),     // 0: nodecontrolplane.SetReplicationRequest
 	(*SetReplicationResponse)(nil),    // 1: nodecontrolplane.SetReplicationResponse
 	(*DeleteReplicationRequest)(nil),  // 2: nodecontrolplane.DeleteReplicationRequest
 	(*DeleteReplicationResponse)(nil), // 3: nodecontrolplane.DeleteReplicationResponse
+	(*NewServerAddRequest)(nil),       // 4: nodecontrolplane.NewServerAddRequest
+	(*NewServerAddResponse)(nil),      // 5: nodecontrolplane.NewServerAddResponse
 }
 var file_protos_NodeControlPlane_proto_depIdxs = []int32{
 	0, // 0: nodecontrolplane.NodeControlPlaneService.ReplicateSetRequest:input_type -> nodecontrolplane.SetReplicationRequest
 	2, // 1: nodecontrolplane.NodeControlPlaneService.ReplicateDeleteRequest:input_type -> nodecontrolplane.DeleteReplicationRequest
-	1, // 2: nodecontrolplane.NodeControlPlaneService.ReplicateSetRequest:output_type -> nodecontrolplane.SetReplicationResponse
-	3, // 3: nodecontrolplane.NodeControlPlaneService.ReplicateDeleteRequest:output_type -> nodecontrolplane.DeleteReplicationResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	4, // 2: nodecontrolplane.NodeControlPlaneService.RegisterNewPeerServer:input_type -> nodecontrolplane.NewServerAddRequest
+	1, // 3: nodecontrolplane.NodeControlPlaneService.ReplicateSetRequest:output_type -> nodecontrolplane.SetReplicationResponse
+	3, // 4: nodecontrolplane.NodeControlPlaneService.ReplicateDeleteRequest:output_type -> nodecontrolplane.DeleteReplicationResponse
+	5, // 5: nodecontrolplane.NodeControlPlaneService.RegisterNewPeerServer:output_type -> nodecontrolplane.NewServerAddResponse
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -310,7 +443,7 @@ func file_protos_NodeControlPlane_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_protos_NodeControlPlane_proto_rawDesc), len(file_protos_NodeControlPlane_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
