@@ -22,14 +22,16 @@ func NewGrpcBuilder(target string) *GrpcBuilder {
 	}
 }
 
-func (builder *GrpcBuilder) SetTimeout(timeout time.Duration) {
+func (builder *GrpcBuilder) SetTimeout(timeout time.Duration) *GrpcBuilder {
 	builder.logger.Info("Setting timeout: ", "timeout", timeout)
 	builder.timeout = timeout
+	return builder
 }
 
-func (builder *GrpcBuilder) SetGrpcDialOptions(dialOptions ...grpc.DialOption) {
+func (builder *GrpcBuilder) SetGrpcDialOptions(dialOptions ...grpc.DialOption) *GrpcBuilder {
 	builder.logger.Info("Setting grpc dial option")
 	builder.options = append(builder.options, dialOptions...)
+	return builder
 }
 
 func (builder *GrpcBuilder) Build() (*grpc.ClientConn, error) {
