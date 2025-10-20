@@ -1,20 +1,18 @@
 package controllers
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"log/slog"
 	"sync"
 	"time"
 
+	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
+	"github.com/Vahsek/distrokv/internal/common/util"
 	pb "github.com/Vahsek/distrokv/pkg/registry"
 )
 
-type Node struct {
-	hostname          string
-	ipAddress         string
-	portNumber        string
+type RegisteredNodeDetails struct {
+	nodeDetails       nodecommon.Node
 	registrationTime  time.Time
 	lastHeartBeatTime time.Time
 }
@@ -26,23 +24,16 @@ type NodeRegistryInterface interface {
 }
 
 type NodeRegistry struct {
-	nodes  map[string]Node
+	nodes  map[string]RegisteredNodeDetails
 	mu     sync.Mutex
 	logger slog.Logger
 }
 
 func InitializeNodeRegistry(logger slog.Logger) *NodeRegistry {
 	return &NodeRegistry{
-		nodes:  make(map[string]Node),
+		nodes:  make(map[string]RegisteredNodeDetails),
 		logger: logger,
 	}
-}
-
-func (nodeRegistry *NodeRegistry) generateHash(hostname, ipAddress string) string {
-	plaintext := hostname + ipAddress
-	hasher := sha256.New()
-	hasher.Write([]byte(plaintext))
-	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func (nodeRegistry *NodeRegistry) RegisterNewNode(nodeDetails *pb.RegisterNodeRequest) error {
@@ -50,14 +41,13 @@ func (nodeRegistry *NodeRegistry) RegisterNewNode(nodeDetails *pb.RegisterNodeRe
 	defer nodeRegistry.mu.Unlock()
 
 	nodeRegistry.logger.Info("Creating new Node with Nodename: %s NodeIP: %s", nodeDetails.Hostname, nodeDetails.IpAddress)
-	var newNode Node = Node{
-		hostname:          nodeDetails.Hostname,
-		ipAddress:         nodeDetails.IpAddress,
-		portNumber:        nodeDetails.PortNumber,
+	var newNodeDetails nodecommon.Node = *nodecommon.InitializeNode(nodeDetails.Hostname, nodeDetails.IpAddress, nodeDetails.PortNumber, "8080", 1)
+	var newNode RegisteredNodeDetails = RegisteredNodeDetails{
+		nodeDetails:       newNodeDetails,
 		registrationTime:  time.Now(),
 		lastHeartBeatTime: time.Now(),
 	}
-	nodeHash := nodeRegistry.generateHash(newNode.hostname, newNode.ipAddress)
+	nodeHash := util.GenerateHash(newNode.nodeDetails.NodeHostname + newNode.nodeDetails.NodeIP)
 
 	nodeRegistry.logger.Info("Checking the node hash")
 	_, exists := nodeRegistry.nodes[nodeHash]
@@ -76,7 +66,7 @@ func (nodeRegistry *NodeRegistry) RegisterNodeHeartBeat(nodeDetails *pb.HeartBea
 	defer nodeRegistry.mu.Unlock()
 
 	nodeRegistry.logger.Info("Heatbeat for node with Nodename: %s NodeIP: %s", nodeDetails.Hostname, nodeDetails.IpAddress)
-	nodeHash := nodeRegistry.generateHash(nodeDetails.Hostname, nodeDetails.IpAddress)
+	nodeHash := util.GenerateHash(nodeDetails.Hostname + nodeDetails.IpAddress)
 	existingNode, exists := nodeRegistry.nodes[nodeHash]
 
 	if !exists {
@@ -99,9 +89,9 @@ func (nodeRegistry *NodeRegistry) GetNodeList() []*pb.NodeDetails {
 	registeredNodesMap := nodeRegistry.nodes
 	for _, value := range registeredNodesMap {
 		nodeDetail := &pb.NodeDetails{
-			NodeIP:          value.ipAddress,
-			NodeHostname:    value.hostname,
-			NodeControlPort: value.portNumber,
+			NodeIP:          value.nodeDetails.NodeIP,
+			NodeHostname:    value.nodeDetails.NodeHostname,
+			NodeControlPort: value.nodeDetails.NodeControlPort,
 		}
 		nodes = append(nodes, nodeDetail)
 	}

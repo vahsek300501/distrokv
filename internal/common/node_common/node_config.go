@@ -6,9 +6,19 @@ const (
 )
 
 type Node struct {
-	nodeHostname    string
-	nodeIP          string
-	nodeControlPort string
-	nodeDataPort    string
-	nodeType        int
+	NodeHostname    string
+	NodeIP          string
+	NodeControlPort string
+	NodeDataPort    string
+	NodeType        int
+}
+
+func InitializeNode(hostname, IP, nodeCPNumber, nodeDPNumber string, nodeType int) *Node {
+	return &Node{
+		NodeHostname:    hostname,
+		NodeIP:          IP,
+		NodeControlPort: nodeCPNumber,
+		NodeDataPort:    nodeDPNumber,
+		NodeType:        nodeType,
+	}
 }

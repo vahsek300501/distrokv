@@ -3,8 +3,8 @@ package main
 import (
 	"log/slog"
 
+	logging "github.com/Vahsek/distrokv/internal/logging"
 	registry "github.com/Vahsek/distrokv/internal/registry"
-	logging "github.com/Vahsek/distrokv/logging"
 )
 
 func main() {
