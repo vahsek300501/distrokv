@@ -31,10 +31,10 @@ func retrieveAllNodesFromRegistry(nodeData *data.NodeData, registryClient pb_reg
 		nodeControlPort := node.NodeControlPort
 
 		// Skip self
-		if nodeName == nodeData.NodeDetails.NodeHostname && nodeIP == nodeData.NodeDetails.NodeIP {
+		if nodeName == nodeData.NodeDetails.NodeHostname && nodeIP == nodeData.NodeDetails.NodeIP && nodeControlPort == nodeData.NodeDetails.NodeControlPort {
+			clusterClient.logger.Info("Found Self node skipping")
 			continue
 		}
-
 		peerNode := nodecommon.InitializeNode(nodeName, nodeIP, nodeControlPort, "", 1)
 		nodeData.PeerNodes[nodeName] = *peerNode
 

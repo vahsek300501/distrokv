@@ -2,7 +2,6 @@ package service
 
 import (
 	"log/slog"
-	"sync"
 
 	nodecommon "github.com/Vahsek/distrokv/internal/common/node_common"
 	"github.com/Vahsek/distrokv/internal/storage"
@@ -38,8 +37,50 @@ func InitializeNewNodeService(hostname, ip, controlPort, dataPort string, nodeTy
 	}
 }
 
+func (nodeService *WorkerNodeService) BootStrapControlPlaneServer(ready chan bool) {
+	nodeService.logger.Info("Bootstrapping control plane server")
+	defer func() {
+		if r := recover(); r != nil {
+			nodeService.logger.Error("Control Plane server panicked", "error", r)
+			ready <- false
+		}
+	}()
+
+	ready <- true
+	servers.StartNodeControlPlaneServer(
+		":"+nodeService.NodeConfig.NodeControlPort,
+		nodeService.logger,
+		nodeService.ClusterClient,
+		nodeService.NodeData)
+}
+
+func (nodeService *WorkerNodeService) BootStrapDataPlaneServer(ready chan bool) {
+	nodeService.logger.Info("Bootstrapping data plane server")
+	defer func() {
+		if r := recover(); r != nil {
+			nodeService.logger.Error("Control Plane server panicked", "error", r)
+			ready <- false
+		}
+	}()
+
+	ready <- true
+
+	servers.StartNodeDataPlaneServer(
+		":"+nodeService.NodeConfig.NodeDataPort,
+		nodeService.logger)
+}
+
+func (nodeService *WorkerNodeService) BootStrapHeartBeat() {
+	defer func() {
+		if r := recover(); r != nil {
+			nodeService.logger.Error("Heartbeat service panicked", "error", r)
+		}
+	}()
+	nodeService.ClusterClient.SendRegularNodeHeartBeat(
+		nodeService.NodeData)
+}
 func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
-	var wg sync.WaitGroup
+	// Registering with registry
 	nodeService.logger.Info("Bootstrapping the worker node")
 	nodeService.logger.Info("Registering with the registry server")
 	err := nodeService.ClusterClient.RegisterNodeWithRegistry(
@@ -50,38 +91,6 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 	}
 	nodeService.logger.Info("Successfully registered with registry")
 
-	nodeService.logger.Info("Starting Control Plane Server")
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		servers.StartNodeControlPlaneServer(
-			":"+nodeService.NodeConfig.NodeControlPort,
-			nodeService.logger,
-			nodeService.ClusterClient,
-			nodeService.NodeData)
-	}()
-
-	nodeService.logger.Info("Starting Data Plane Server")
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		servers.StartNodeDataPlaneServer(
-			":"+nodeService.NodeConfig.NodeDataPort,
-			nodeService.logger)
-	}()
-
-	nodeService.logger.Info("Starting heartbeat service")
-	wg.Add(1)
-	go func() {
-		defer func() {
-			if r := recover(); r != nil {
-				nodeService.logger.Error("Heartbeat service panicked", "error", r)
-			}
-		}()
-		nodeService.ClusterClient.SendRegularNodeHeartBeat(
-			nodeService.NodeData)
-	}()
-
 	nodeService.logger.Info("Registering Node with peers")
 	errRegisteringWithPeers := nodeService.ClusterClient.RegisterNodeWithPeers(nodeService.NodeData)
 	if errRegisteringWithPeers != nil {
@@ -89,5 +98,24 @@ func (nodeService *WorkerNodeService) BootstrapWorkerNode() {
 		return
 	}
 	nodeService.logger.Info("Successfully registerd with peers")
-	wg.Wait()
+
+	// Setting control plane, data plane and heartbeat
+	controlPlanChannel := make(chan bool, 1)
+	dataPlaneChannel := make(chan bool, 1)
+
+	go nodeService.BootStrapControlPlaneServer(controlPlanChannel)
+	go nodeService.BootStrapDataPlaneServer(dataPlaneChannel)
+	go nodeService.BootStrapHeartBeat()
+
+	var bootStrapCPStatus bool = <-controlPlanChannel
+	var bootStrapDPStatus bool = <-dataPlaneChannel
+
+	if !bootStrapCPStatus && !bootStrapDPStatus {
+		nodeService.logger.Error("Error in bootstraping servers")
+		return
+	}
+
+	nodeService.logger.Info("All service started successfully")
+
+	select {}
 }

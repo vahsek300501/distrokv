@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"os"
 
 	logging "github.com/Vahsek/distrokv/internal/logging"
 	registry "github.com/Vahsek/distrokv/internal/registry"
@@ -9,8 +10,13 @@ import (
 )
 
 func main() {
-	var fileLoggerProvider *logging.FileLoggerProvider = logging.NewFileLoggerProvider("logfile", ".log", "C:\\Users\\kgambhir\\OneDrive - Microsoft\\Desktop\\distrokv\\nodelogs", 10*1024, 10000)
-	var logger slog.Logger = *logging.GetLogger(fileLoggerProvider)
+	var fileLoggerProvider *logging.FileLoggerProvider = logging.NewFileLoggerProvider(
+		"logfile",
+		".log",
+		"C:\\Users\\kgambhir\\OneDrive - Microsoft\\Desktop\\distrokv\\nodelogs",
+		10*1024,
+		10000)
+	var logger slog.Logger = *logging.GetLogger(fileLoggerProvider, os.Stdout)
 	var bootType int = 1
 
 	if bootType == 0 {
@@ -19,8 +25,8 @@ func main() {
 		workerNodeService := node_service.InitializeNewNodeService(
 			"localhost",
 			"127.0.0.1",
-			"8001",
-			"9001",
+			"8002",
+			"9002",
 			1,
 			"127.0.0.1:8080",
 			logger)

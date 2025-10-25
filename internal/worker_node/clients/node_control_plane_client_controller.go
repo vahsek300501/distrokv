@@ -31,7 +31,6 @@ func (clusterClient *ClusterClient) RegisterNodeWithPeers(nodeData *data.NodeDat
 
 		response, peerError := peerNodeClient.RegisterNewPeerServer(context.Background(), request)
 		logger.Info("Peer Response", "Response", response)
-
 		if peerError != nil {
 			logger.Error("Network Error in registering the peer client")
 			return peerError

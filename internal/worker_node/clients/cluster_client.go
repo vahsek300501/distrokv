@@ -2,7 +2,6 @@ package clients
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 
 	clientcommon "github.com/Vahsek/distrokv/internal/common/client_common"
@@ -26,15 +25,12 @@ func InitializeClusterClient(logger slog.Logger) *ClusterClient {
 
 // createRegistryClient creates a gRPC client for registry communication
 func (clusterClient *ClusterClient) createRegistryClient(registryServerAddress string) (pb_registry.RegistryServiceClient, error) {
-	fmt.Println("Started registring with registery")
-	fmt.Println(registryServerAddress)
 	grpcDialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	registryBuilder := clientcommon.NewGrpcBuilder(registryServerAddress, clusterClient.logger).
 		SetGrpcDialOptions(grpcDialOption...)
 	registryClientConstructor := func(conn *grpc.ClientConn) pb_registry.RegistryServiceClient {
 		return pb_registry.NewRegistryServiceClient(conn)
 	}
-	fmt.Println("Creating client using factory")
 	client, err := clientcommon.GetClient(
 		context.Background(),
 		clusterClient.factory,
@@ -64,5 +60,6 @@ func (clusterClient *ClusterClient) createPeerClientConnection(peerAddress strin
 		clusterClient.logger.Error("Error in creating peer client")
 		return nil, err
 	}
+	clusterClient.logger.Info("Successfully created connection with peer: ", "peeraddress", peerAddress)
 	return client, nil
 }
